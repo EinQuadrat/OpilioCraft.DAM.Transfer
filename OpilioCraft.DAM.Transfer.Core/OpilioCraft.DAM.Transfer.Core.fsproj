@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <Authors>Carsten Schäfer</Authors>
+    <Copyright>Copyright (c) 2022 by Carsten Schäfer</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="LikeOperator.fs" />
+    <Compile Include="Settings.fs" />
+    <Compile Include="Model.fs" />
+    <Compile Include="UserSettings.fs" />
+    <Compile Include="ITransferWorker.fs" />
+    <Compile Include="TransferWorker.fs" />
+    <Compile Include="EventMonitor.fs" />
+    <Compile Include="Runtime.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Argu" Version="6.1.1" />
+    <PackageReference Include="OpilioCraft.FSharp.Prelude" Version="1.0.0" />
+    <PackageReference Include="OpilioCraft.PortableDevices.Core" Version="1.0.0" />
+    <PackageReference Include="System.Text.Json" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="6.0.3" />
+  </ItemGroup>
+
+</Project>

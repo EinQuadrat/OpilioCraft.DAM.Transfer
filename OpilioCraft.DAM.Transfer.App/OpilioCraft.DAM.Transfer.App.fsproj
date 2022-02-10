@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>True</UseWPF>
+    <Authors>Carsten Schäfer</Authors>
+    <Description>GUI for transfer app</Description>
+    <Copyright>Copyright (c) 2022 by Carsten Schäfer</Copyright>
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Resources.fs" />
+    <Compile Include="Shared.fs" />
+    <Compile Include="Prepare.fs" />
+    <Compile Include="Run.fs" />
+    <Compile Include="App.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Elmish.WPF" Version="4.0.0-beta-42" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpilioCraft.DAM.Transfer.Core\OpilioCraft.DAM.Transfer.Core.fsproj" />
+    <ProjectReference Include="..\OpilioCraft.DAM.Transfer.Xaml\OpilioCraft.DAM.Transfer.Xaml.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="6.0.3" />
+  </ItemGroup>
+
+</Project>
