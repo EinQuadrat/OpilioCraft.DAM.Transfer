@@ -17,6 +17,8 @@ let I18N =
             "MissingFile", "Datei fehlt"
             "CorruptSetup", "Die Anwendungskonfiguration ist fehlerhaft."
 
+            "ErrorOccurredX", "Es ist ein Fehler aufgetreten!\n\n%s"
+
             "UsageHint", "Bitte ein Profil auswählen und 'Transfer starten' anklicken."
             "CancelBtn", "Abbrechen"
             "TransferBtn", "Transfer starten"
@@ -27,6 +29,7 @@ let I18N =
             "Transferring", "Dateien werden übertragen..."
             "TransferCompleted", "Transfer abgeschlossen"
         ]
+
     | _ ->
         Map [
             "Error", "Error"
@@ -34,6 +37,8 @@ let I18N =
             "IncompleteSetup", "App setup is incomplete."
             "MissingFile", "Missing file"
             "CorruptSetup", "App setup is corrupt."
+
+            "ErrorOccurredX", "Error occurred!\n\n%s"
 
             "UsageHint", "Please select a profile and hit 'Run Transfer'."
             "CancelBtn", "Cancel"

@@ -3,17 +3,39 @@ module OpilioCraft.DAM.Transfer.Core
 open System
 
 open Argu
-open Runtime
-
 open OpilioCraft.FSharp.Prelude
+open OpilioCraft.DAM.Transfer.Runtime
 
 // commandline definition
+type CheckArgs =
+    | [<NoCommandLine>] Dummy
+
+    interface IArgParserTemplate with
+        member x.Usage = ""
+
+type SetupArgs =
+    | [<NoCommandLine>] Dummy
+
+    interface IArgParserTemplate with
+        member x.Usage = ""
+
+type RunArgs =
+    | [<MainCommand; ExactlyOnce; Last>] Profile of ProfileName:string
+    | Target_Path of Path:string
+    | Slow_Down
+    
+    interface IArgParserTemplate with
+        member x.Usage =
+            match x with
+            | Profile _ -> "name of transfer profile to be used"
+            | Target_Path _ -> "overwrite configured transfer target"
+            | Slow_Down _ -> "slow down execution for testing purposes"
+
+[<NoAppSettings>]
 type Arguments =
-    | [<AltCommandLine("-c")>] Check
-    | [<AltCommandLine("-s")>] Setup
-    | Run of ProfileName:string
-    | TargetPath of Path:string
-    | SlowDown
+    | [<CliPrefix(CliPrefix.None)>] Check of ParseResults<CheckArgs>
+    | [<CliPrefix(CliPrefix.None)>] Setup of ParseResults<SetupArgs>
+    | [<CliPrefix(CliPrefix.None)>] Run of ParseResults<RunArgs>
 
     interface IArgParserTemplate with
         member s.Usage =
@@ -21,8 +43,6 @@ type Arguments =
             | Check _   -> "check (and show) current setup"
             | Setup _   -> "run setup and write example configuration"
             | Run _ -> "run transfer with specified profile"
-            | TargetPath _ -> "overwrite configured transfer target"
-            | SlowDown _ -> "slow down execution for testing purposes"
 
 let getExitCode result =
     match result with
@@ -50,16 +70,18 @@ let main args =
         try
             UserSettings.verifySettings () // throws Exception on error
 
+            let runArgs = p.GetResult(Run)
+
             let config = UserSettings.config ()
             let profilesCatalogue = UserSettings.profilesCatalogue ()
-            let profileName = p.GetResult(Run)
+            let profileName = runArgs.GetResult(Profile)
 
-            let targetPath = if p.Contains(TargetPath) then p.GetResult(TargetPath) else config.Locations.["Incoming"]
+            let targetPath = runArgs.TryGetResult(Target_Path) |> Option.defaultValue config.Locations.["Incoming"]
 
             if System.IO.Directory.Exists(targetPath)
             then
-                match (profileName, profilesCatalogue) ||> Map.tryFind with
-                | Some profile -> runTransfer profile targetPath
+                match profilesCatalogue |> Map.tryFind profileName with
+                | Some profile -> runTransfer profile targetPath (runArgs.Contains(Slow_Down))
                 | _ -> Error UnknownProfile
             else
                 Error (InvalidTargetPath(targetPath))

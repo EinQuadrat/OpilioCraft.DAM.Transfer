@@ -123,9 +123,9 @@ let runSetup () =
     with
     | exn -> Console.Error.WriteLine $"[DAM] setup error: {exn.Message}"; Error RuntimeError
 
-let runTransfer transferProfile targetDir =
+let runTransfer transferProfile targetDir slowDown =
     try
-        let transferWorker = TransferWorker<_>.CreateWorker transferProfile targetDir false
+        let transferWorker = TransferWorker<_>.CreateWorker transferProfile targetDir slowDown
 
         let eventCategory = if transferProfile.Options.Contains(TransferOption.Silent) then EventMonitor.errorsOnly else EventMonitor.allEvents
         transferWorker |> EventMonitor.subscribe eventCategory
