@@ -8,13 +8,13 @@ open OpilioCraft.DAM.Transfer.Runtime
 
 // commandline definition
 type CheckArgs =
-    | [<NoCommandLine>] Dummy
+    | [<NoCommandLine>] Dummy // enforce subcommand style
 
     interface IArgParserTemplate with
         member x.Usage = ""
 
 type SetupArgs =
-    | [<NoCommandLine>] Dummy
+    | [<NoCommandLine>] Dummy // enforce subcommand style
 
     interface IArgParserTemplate with
         member x.Usage = ""
@@ -28,7 +28,7 @@ type RunArgs =
         member x.Usage =
             match x with
             | Profile _ -> "name of transfer profile to be used"
-            | Target_Path _ -> "overwrite configured transfer target"
+            | Target_Path _ -> "overwrite configured transfer target path"
             | Slow_Down _ -> "slow down execution for testing purposes"
 
 [<NoAppSettings>]
@@ -40,27 +40,15 @@ type Arguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Check _   -> "check (and show) current setup"
+            | Check _   -> "check current setup"
             | Setup _   -> "run setup and write example configuration"
-            | Run _ -> "run transfer with specified profile"
-
-let getExitCode result =
-    match result with
-    | Ok _ -> 0
-    | Error reason ->
-        match reason with
-        | UsageError -> 1
-        | SetupPending -> 2
-        | InvalidConfiguration _ -> 3
-        | UnknownProfile -> 4
-        | InvalidTargetPath _ -> 5
-        | RuntimeError -> 99
+            | Run _     -> "run transfer with specified profile"
 
 
 [<EntryPoint>]
 let main args =
     let errorHandler = ProcessExiter(colorizer = function | ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
-    let parser = ArgumentParser.Create<Arguments>(programName = "TransferApp", errorHandler = errorHandler)
+    let parser = ArgumentParser.Create<Arguments>(programName = "OpilioCraft.DAM.Transfer.App.exe", errorHandler = errorHandler)
     
     match parser.ParseCommandLine args with
     | p when p.Contains(Check) -> runCheck ()
@@ -69,29 +57,28 @@ let main args =
     | p when p.Contains(Run) ->
         try
             UserSettings.verifySettings () // throws Exception on error
-
-            let runArgs = p.GetResult(Run)
-
             let config = UserSettings.config ()
             let profilesCatalogue = UserSettings.profilesCatalogue ()
-            let profileName = runArgs.GetResult(Profile)
 
+            let runArgs = p.GetResult(Run)
+            let profileName = runArgs.GetResult(Profile)
             let targetPath = runArgs.TryGetResult(Target_Path) |> Option.defaultValue config.Locations.["Incoming"]
 
             if System.IO.Directory.Exists(targetPath)
             then
                 match profilesCatalogue |> Map.tryFind profileName with
                 | Some profile -> runTransfer profile targetPath (runArgs.Contains(Slow_Down))
-                | _ -> Error UnknownProfile
+                | _ -> Emit.emitError UnknownProfile $"[ERROR] unknown profile: {profileName}"
             else
-                Error (InvalidTargetPath(targetPath))
+                Emit.emitError (InvalidTargetPath targetPath) $"[ERROR] invalid target path: {targetPath}"
 
         with
         | :? IncompleteSetupException as exn -> Error SetupPending
         | :? InvalidUserSettingsException as exn -> Error (InvalidConfiguration(exn.Message))
-        | exn -> Console.Error.WriteLine $"runtime error: {exn.Message}"; Error RuntimeError
+        | exn -> Emit.emitError RuntimeError $"[ERROR]: {exn.Message}"
     
-    | _ ->
-        Console.WriteLine $"{parser.PrintUsage()}"
-        Error UsageError
-    |> getExitCode
+    | _ -> Emit.emitError UsageError $"{parser.PrintUsage()}"
+
+    |> function
+        | Ok _ -> 0
+        | Error reason -> reason.ReturnCode

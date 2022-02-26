@@ -2,6 +2,7 @@
 
 open System.Windows
 
+open OpilioCraft.DAM.Transfer
 open OpilioCraft.DAM.Transfer.App.Resources
 
 [<RequireQualifiedAccess>]

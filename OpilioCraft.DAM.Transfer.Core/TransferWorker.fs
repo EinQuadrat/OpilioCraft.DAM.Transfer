@@ -83,7 +83,8 @@ and DriveTransferWorker (transferProfile, targetDir, slowDown) =
                 |> List.collect (fun subfolder -> treeWalker subfolder tail)
 
         treeWalker rootFolder pathParts
-        |> List.collect (fun folder -> sourceDef.Selectors |> List.collect (fun selector -> Directory.GetFiles(folder, selector) |> Array.toList))
+        |> List.collect (fun folder ->
+            sourceDef.Selectors |> List.collect (fun selector -> Directory.GetFiles(folder, selector) |> Array.toList))
 
     override x.TransferFile file =
         let fileName = Path.GetFileName(file)

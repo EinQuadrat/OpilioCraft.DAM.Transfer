@@ -18,7 +18,7 @@ let runCheck () =
         Console.WriteLine "OK"
 
         Console.Write ". verify Location.Incoming: "
-        UserSettings.config()
+        UserSettings.config ()
         |> fun settings -> settings.Locations |> UserSettings.verifyLocation "Incoming"
         |> fun _ -> Console.WriteLine "OK"
         Console.WriteLine ()
@@ -34,14 +34,11 @@ let runCheck () =
         Ok ()
     with
     | :? IncompleteSetupException as exn ->
-        Console.WriteLine $"[ERROR] missing user settings file: {exn.MissingFile}"
-        Error SetupPending
+            Emit.emitError SetupPending $"[ERROR] missing user settings file: {exn.MissingFile}"
     | :? InvalidUserSettingsException as exn ->
-        Console.WriteLine $"[ERROR] invalid user settings: {exn.File}, {exn.ErrorMessage}"
-        Error (InvalidConfiguration(exn.Message))
+            Emit.emitError (InvalidConfiguration exn.Message) $"[ERROR] invalid user settings: {exn.File}, {exn.ErrorMessage}"
     | exn ->
-        Console.WriteLine $"[ERROR] something is wrong with the setup: {exn.Message}"
-        Error (InvalidConfiguration(exn.Message))
+            Emit.emitError (InvalidConfiguration exn.Message) $"[ERROR] something is wrong with the setup: {exn.Message}"
 
 let runSetup () =
     let exampleConfig : DAMConfig = 
@@ -99,7 +96,7 @@ let runSetup () =
             Console.WriteLine $"\nFile is located here: {Settings.ConfigFilename}"
         else
             Console.Write "Checking DAM configuration... "
-            UserSettings.config()
+            UserSettings.config ()
             |> fun settings -> settings.Locations |> UserSettings.verifyLocation "Incoming"
             |> fun _ -> Console.WriteLine "OK"
 
@@ -121,7 +118,7 @@ let runSetup () =
 
         Ok ()
     with
-    | exn -> Console.Error.WriteLine $"[DAM] setup error: {exn.Message}"; Error RuntimeError
+    | exn -> Emit.emitError RuntimeError $"[DAM] setup error: {exn.Message}"
 
 let runTransfer transferProfile targetDir slowDown =
     try
@@ -133,6 +130,4 @@ let runTransfer transferProfile targetDir slowDown =
         transferWorker.Run ()
         Ok ()
     with
-    | exn ->
-        Console.Error.WriteLine $"Error occurred: {exn.Message}"
-        Error RuntimeError
+    | exn -> Emit.emitError RuntimeError $"Error occurred: {exn.Message}"

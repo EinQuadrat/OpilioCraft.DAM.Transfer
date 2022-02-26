@@ -9,6 +9,16 @@ type ErrorReason =
     | InvalidTargetPath of Path:string
     | RuntimeError
 
+    with
+        member x.ReturnCode =
+            match x with
+            | UsageError -> 1
+            | SetupPending -> 2
+            | InvalidConfiguration _ -> 3
+            | UnknownProfile -> 4
+            | InvalidTargetPath _ -> 5
+            | RuntimeError -> 99
+
 // shared config
 type DAMConfig =
     {

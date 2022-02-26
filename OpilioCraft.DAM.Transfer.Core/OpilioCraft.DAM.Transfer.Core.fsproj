@@ -13,6 +13,7 @@
     <Compile Include="LikeOperator.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="Model.fs" />
+    <Compile Include="Emit.fs" />
     <Compile Include="UserSettings.fs" />
     <Compile Include="ITransferWorker.fs" />
     <Compile Include="TransferWorker.fs" />
@@ -23,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.1" />
-    <PackageReference Include="OpilioCraft.FSharp.Prelude" Version="1.0.0" />
+    <PackageReference Include="OpilioCraft.FSharp.Prelude" Version="1.2.0" />
     <PackageReference Include="OpilioCraft.PortableDevices.Core" Version="1.0.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.2" />
   </ItemGroup>
