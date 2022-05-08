@@ -3,11 +3,32 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>portable</DebugType>
     <Authors>Carsten Schäfer</Authors>
     <Copyright>Copyright (c) 2022 by Carsten Schäfer</Copyright>
+    <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="cs\**" />
+    <EmbeddedResource Remove="de\**" />
+    <EmbeddedResource Remove="es\**" />
+    <EmbeddedResource Remove="fr\**" />
+    <EmbeddedResource Remove="it\**" />
+    <EmbeddedResource Remove="ja\**" />
+    <EmbeddedResource Remove="ko\**" />
+    <EmbeddedResource Remove="pl\**" />
+    <EmbeddedResource Remove="pt-BR\**" />
+    <EmbeddedResource Remove="runtimes\**" />
+    <EmbeddedResource Remove="ru\**" />
+    <EmbeddedResource Remove="tr\**" />
+    <EmbeddedResource Remove="zh-Hans\**" />
+    <EmbeddedResource Remove="zh-Hant\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="LikeOperator.fs" />
@@ -23,10 +44,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <COMReference Include="PortableDeviceApiLib">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>1f001332-1a57-4934-be31-affc99f4ee0a</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="PortableDeviceTypesLib">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>2b00ba2f-e750-4beb-9235-97142ede1d3e</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.1" />
-    <PackageReference Include="OpilioCraft.FSharp.Prelude" Version="1.2.0" />
-    <PackageReference Include="OpilioCraft.PortableDevices.Core" Version="1.0.0" />
-    <PackageReference Include="System.Text.Json" Version="6.0.2" />
+    <PackageReference Include="OpilioCraft.FSharp.Prelude" Version="1.8.0" />
+    <PackageReference Include="OpilioCraft.PortableDevices.Core" Version="1.1.3" />
+    <PackageReference Include="System.Text.Json" Version="6.0.3" />
   </ItemGroup>
 
   <ItemGroup>
