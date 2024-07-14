@@ -34,11 +34,11 @@ let runCheck () =
         Ok ()
     with
     | :? IncompleteSetupException as exn ->
-            Emit.emitError SetupPending $"[ERROR] missing user settings file: {exn.MissingFile}"
+            Logging.emitError SetupPending $"missing user settings file: {exn.MissingFile}"
     | :? InvalidUserSettingsException as exn ->
-            Emit.emitError (InvalidConfiguration exn.Message) $"[ERROR] invalid user settings: {exn.File}, {exn.ErrorMessage}"
+            Logging.emitError (InvalidConfiguration exn.Message) $"invalid user settings: {exn.File}, {exn.ErrorMessage}"
     | exn ->
-            Emit.emitError (InvalidConfiguration exn.Message) $"[ERROR] something is wrong with the setup: {exn.Message}"
+            Logging.emitError (InvalidConfiguration exn.Message) $"something is wrong with the setup: {exn.Message}"
 
 let runSetup () =
     let exampleConfig : DAMConfig = 
@@ -81,10 +81,10 @@ let runSetup () =
         }
 
     try
-        if not <| Directory.Exists(Settings.AppDataLocation)
+        if not <| Directory.Exists(OpilioCraft.Settings.AppDataLocation)
         then
             Console.Write "Directory for user settings missing"
-            Directory.CreateDirectory(Settings.AppDataLocation) |> ignore
+            Directory.CreateDirectory(OpilioCraft.Settings.AppDataLocation) |> ignore
             Console.WriteLine " --> created"
 
         if not <| File.Exists(Settings.ConfigFilename)
@@ -118,7 +118,7 @@ let runSetup () =
 
         Ok ()
     with
-    | exn -> Emit.emitError RuntimeError $"[DAM] setup error: {exn.Message}"
+    | exn -> Logging.emitError RuntimeError $"setup error: {exn.Message}"
 
 let runTransfer transferProfile targetDir slowDown =
     try
@@ -130,4 +130,4 @@ let runTransfer transferProfile targetDir slowDown =
         transferWorker.Run ()
         Ok ()
     with
-    | exn -> Emit.emitError RuntimeError $"Error occurred: {exn.Message}"
+    | exn -> Logging.emitError RuntimeError $"Error occurred: {exn.Message}"

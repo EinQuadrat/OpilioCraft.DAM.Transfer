@@ -1,6 +1,6 @@
 ﻿module OpilioCraft.FSharp.Prelude.LikeOperator
 
-open System.Collections.Generic
+//open System.Collections.Generic
 
 let private charListToSet (charList : string) =
     let rec transform chars cache : Set<char> =

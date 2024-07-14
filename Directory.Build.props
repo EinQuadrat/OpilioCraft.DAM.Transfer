@@ -1,0 +1,20 @@
+﻿<Project>
+
+    <PropertyGroup Label="UserMacros">
+        <SolutionId>OpilioCraft.DAM.Transfer</SolutionId>
+    </PropertyGroup>
+
+    <PropertyGroup>
+
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <Authors>Carsten Schäfer</Authors>
+        <Copyright>Copyright (c) 2022-2024 by Carsten Schäfer</Copyright>
+        <RepositoryUrl>https://github.com/EinQuadrat/OpilioCraft.DAM.Transfer.git</RepositoryUrl>
+        <PackageTags>OpilioCraft;DAM;FSharp</PackageTags>
+
+        <AssemblyName>$(SolutionId).$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>$(SolutionId).$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+
+    </PropertyGroup>
+
+</Project>

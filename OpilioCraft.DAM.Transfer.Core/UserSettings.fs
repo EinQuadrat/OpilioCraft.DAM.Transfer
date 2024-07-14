@@ -5,6 +5,7 @@ open System.Text.Json
 open System.Text.Json.Serialization
 
 open OpilioCraft.FSharp.Prelude
+open OpilioCraft.FSharp.Prelude.UserSettings
 
 // configuration errors
 type ConfigIssue =
@@ -73,10 +74,10 @@ module UserSettings =
             jsonOpts
 
     // load user settings on demand
-    let private loadConfig = UserSettingsHelper.lazyLoad<DAMConfig> Settings.ConfigFilename configJsonOptions
+    let private loadConfig = lazyLoad<DAMConfig> Settings.ConfigFilename
     let config () = loadConfig.Value
 
-    let private loadProfilesCatalogue = UserSettingsHelper.lazyLoad<ProfilesCatalogue> Settings.ProfilesCatalogueFilename profilesCatalogueJsonOptions
+    let private loadProfilesCatalogue = lazyLoadWithOptions<ProfilesCatalogue> Settings.ProfilesCatalogueFilename profilesCatalogueJsonOptions
     let profilesCatalogue () = loadProfilesCatalogue.Value
 
     // config checker

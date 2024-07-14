@@ -56,7 +56,7 @@ module App =
                 async { transferWorker.Run () }
                 |> Async.Start
 
-            { model with ActiveStep = Run }, Cmd.ofSub runTransfer
+            { model with ActiveStep = Run }, Cmd.ofEffect runTransfer
 
         | CloseApp ->
             Shared.closeApp ()

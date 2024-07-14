@@ -29,7 +29,7 @@ type RunArgs =
             match x with
             | Profile _ -> "name of transfer profile to be used"
             | Target_Path _ -> "overwrite configured transfer target path"
-            | Slow_Down _ -> "slow down execution for testing purposes"
+            | Slow_Down -> "slow down execution for testing purposes"
 
 [<NoAppSettings>]
 type Arguments =
@@ -64,20 +64,20 @@ let main args =
             let profileName = runArgs.GetResult(Profile)
             let targetPath = runArgs.TryGetResult(Target_Path) |> Option.defaultValue config.Locations.["Incoming"]
 
-            if System.IO.Directory.Exists(targetPath)
+            if IO.Directory.Exists(targetPath)
             then
                 match profilesCatalogue |> Map.tryFind profileName with
                 | Some profile -> runTransfer profile targetPath (runArgs.Contains(Slow_Down))
-                | _ -> Emit.emitError UnknownProfile $"[ERROR] unknown profile: {profileName}"
+                | _ -> Logging.emitError UnknownProfile $"[ERROR] unknown profile: {profileName}"
             else
-                Emit.emitError (InvalidTargetPath targetPath) $"[ERROR] invalid target path: {targetPath}"
+                Logging.emitError (InvalidTargetPath targetPath) $"[ERROR] invalid target path: {targetPath}"
 
         with
         | :? IncompleteSetupException as exn -> Error SetupPending
         | :? InvalidUserSettingsException as exn -> Error (InvalidConfiguration(exn.Message))
-        | exn -> Emit.emitError RuntimeError $"[ERROR]: {exn.Message}"
+        | exn -> Logging.emitError RuntimeError $"[ERROR]: {exn.Message}"
     
-    | _ -> Emit.emitError UsageError $"{parser.PrintUsage()}"
+    | _ -> Logging.emitError UsageError $"{parser.PrintUsage()}"
 
     |> function
         | Ok _ -> 0
